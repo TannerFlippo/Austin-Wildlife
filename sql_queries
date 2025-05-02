@@ -1,0 +1,34 @@
+-- common_animals_taxon.csv/most observed species. Creates table of the top 10 most observed species by taxon name
+
+CREATE TABLE common_animals_taxon AS
+SELECT 
+  COUNT(common_name) AS count,
+  common_name
+FROM 
+  austin_observations
+GROUP BY 
+  common_name
+HAVING 
+  COUNT(common_name) >= 200
+ORDER BY 
+  count DESC
+LIMIT 10;
+
+
+-- all_observations_by_month.csv/monthly observation trends. Finds total observations in each month of the year for the past ten years by taxon name :
+
+SELECT
+    TO_CHAR(observed_on, 'Month') AS month,
+    EXTRACT(MONTH FROM observed_on) AS month_number,
+    COUNT(*) AS total_sightings
+FROM
+    austin_observations
+WHERE
+    observed_on >= CURRENT_DATE - INTERVAL '10 years'
+    AND iconic_taxon_name = 'Mammalia'
+GROUP BY
+    TO_CHAR(observed_on, 'Month'),
+    EXTRACT(MONTH FROM observed_on)
+ORDER BY
+    month_number;
+
